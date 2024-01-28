@@ -49,7 +49,8 @@ void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const stru
     fwrite(&mainBuf, size_mainBuf, 1, stdout);
 }
 
-void proccess(size_t amount_of_bytes, const char *str, const struct barCharecters* charecters, int minimumHeight, char inputBarDelimiter, char lineDelimiter, char frameDelimiter){
+void proccess(size_t amount_of_bytes, const char *str, const struct barCharecters* charecters,
+        int minimumHeight, int addedBarHeight, char inputBarDelimiter, char lineDelimiter, char frameDelimiter){
     int biggest = minimumHeight;
     int barSizes[amount_of_bytes/2];
     int barSizesHead = 0;
@@ -58,15 +59,15 @@ void proccess(size_t amount_of_bytes, const char *str, const struct barCharecter
     for(int head = 0; head < amount_of_bytes; head++){
         if(str[head] != inputBarDelimiter){
             numStorage[numStorageHead++] = str[head];
-        } else{
-            int num = (int) strtol(numStorage, NULL, 10);
-            barSizes[barSizesHead++] = num;
-            if (num > biggest) {
-                biggest = num;
-            }
-            for(int i=0;i<numStorageHead;i++){numStorage[i]=' ';};
-            numStorageHead = 0;
+            continue;
         }
+        int num = ((int) strtol(numStorage, NULL, 10)) + addedBarHeight;
+        barSizes[barSizesHead++] = num;
+        if (num > biggest) {
+            biggest = num;
+        }
+        for(int i=0;i<numStorageHead;i++){numStorage[i]=' ';};
+        numStorageHead = 0;
     }
     printFinalLine(barSizes, barSizesHead, biggest, charecters, lineDelimiter, frameDelimiter);
 }
@@ -90,6 +91,7 @@ int main(){
     char buffer[1024] = {0};
     char tempBuffer[1024] = {0};
     int minimumDrawnHeight = 80;
+    int barAddedHeight = 1;
     struct barCharecters chars;
     chars.charByteSize = 4;
     chars.charByteOffset = 3;
@@ -109,7 +111,7 @@ int main(){
         if(findChar(&buffer[head], bytesRead, '\n', &newLinePosition)){
             int endOfLineBufferSize = head + newLinePosition + 1;
 
-            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight,';', ';', '\n');
+            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight, barAddedHeight, ';', ';', '\n');
 
             memcpy(tempBuffer, buffer, sizeof(char) * BUFFER_SIZE);
             memset(buffer, 0, sizeof(char) * BUFFER_SIZE);
