@@ -117,12 +117,13 @@ int main(int argc, const char **argv){
         return 0;
     }
     freopen(NULL, "rs", stdin);
-    const int BUFFER_SIZE = 1024;
+    const int BUFFER_SIZE = 8192;
     int head = 0;
     int bytesRead = 0;
     int newLinePosition = 0;
-    char buffer[1024] = {0};
-    char tempBuffer[1024] = {0};
+    char buffer[BUFFER_SIZE];
+    memset(buffer, 0, sizeof(char) * BUFFER_SIZE);
+    char tempBuffer[BUFFER_SIZE];
     int minimumDrawnHeight = getArgInt(argc, argv, "--minimum-output-height", 80);
     int barAddedHeight = getArgInt(argc, argv, "--bar-added-height", 0);
     struct barCharecters chars;
