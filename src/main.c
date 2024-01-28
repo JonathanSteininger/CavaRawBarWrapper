@@ -81,8 +81,38 @@ uint findChar(const char *buffer, const uint bufferSize, const char charecter, i
     }
     return 0;
 }
+int getArgInt(const int argc, const char **argv,const char *argumentName, int defaultValue){
+    size_t foundArgument = 0;
+    char *lastChar;
+    for(int i = 1; i < argc; i++){
+        //only runs if previous argument name was a match
+        if(foundArgument) {
+            int value = (int) strtol(argv[i], &lastChar, 10);
+            return *lastChar == '\0' ? value : defaultValue;
+        }
+        if(strcmp(argumentName, argv[i])){
+            foundArgument = 1;
+        }
+    }
+    return defaultValue;
+}
+size_t checkHelp(const int argc, const char **argv){
+    for( int i = 1; i < argc; i++){
+        if(strcmp(argv[i], "-h") || strcmp(argv[i], "--help")) {
+            return 1;
+        }
+    }
+    return 0;
+}
+void printHelp(){
+    printf("This program reads the raw output from cava in ascii mode.\nThe cava output will need to be piped into this program.\n\nOptional Arguments:\n");
+}
 
-int main(){
+int main(int argc, const char **argv){
+    if(checkHelp(argc, argv)){
+        printHelp();
+        return 0;
+    }
     freopen(NULL, "rs", stdin);
     const int BUFFER_SIZE = 1024;
     int head = 0;
@@ -90,8 +120,8 @@ int main(){
     int newLinePosition = 0;
     char buffer[1024] = {0};
     char tempBuffer[1024] = {0};
-    int minimumDrawnHeight = 80;
-    int barAddedHeight = 1;
+    int minimumDrawnHeight = getArgInt(argc, argv, "--minimum-output-height", 80);
+    int barAddedHeight = getArgInt(argc, argv, "--bar-added-height", 0);
     struct barCharecters chars;
     chars.charByteSize = 4;
     chars.charByteOffset = 3;
