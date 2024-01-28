@@ -90,7 +90,7 @@ int getArgInt(const int argc, const char **argv,const char *argumentName, int de
             int value = (int) strtol(argv[i], &lastChar, 10);
             return *lastChar == '\0' ? value : defaultValue;
         }
-        if(strcmp(argumentName, argv[i])){
+        if(strcmp(argumentName, argv[i]) == 0){
             foundArgument = 1;
         }
     }
@@ -98,14 +98,17 @@ int getArgInt(const int argc, const char **argv,const char *argumentName, int de
 }
 size_t checkHelp(const int argc, const char **argv){
     for( int i = 1; i < argc; i++){
-        if(strcmp(argv[i], "-h") || strcmp(argv[i], "--help")) {
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
             return 1;
         }
     }
     return 0;
 }
 void printHelp(){
+    printf("\ncavawrapper Help Screen\n\n");
     printf("This program reads the raw output from cava in ascii mode.\nThe cava output will need to be piped into this program.\n\nOptional Arguments:\n");
+    printf("\t--bar-added-height [num]  -  (default: 0)  -  adds a set amount of height to every bar.\n\t\tUsefull if you want to permenantly see the bars even when theres little to no sound.\n");
+    printf("\t--minimum-output-height [num]  -  (default: 80)  -  forces the program to print a minimum amount of bar height.\n\t\tThis will not change the bars height, but will make the program draw alot more empty space.\n\t\tThis is usefull if another program struggels with the length of the output changing alot.\n\n");
 }
 
 int main(int argc, const char **argv){
