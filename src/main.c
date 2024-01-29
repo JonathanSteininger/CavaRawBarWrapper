@@ -116,7 +116,14 @@ int main(int argc, const char **argv){
         printHelp();
         return 0;
     }
-    freopen(NULL, "rs", stdin);
+
+    char inputFrameDelimiter = (char)getArgInt(argc, argv, "--input-frame-delimiter", 10);
+    char inputBarDelimiter = (char)getArgInt(argc, argv, "--input-bar-delimiter", 59);
+    char outputFrameDelimiter = (char)getArgInt(argc, argv, "--output-frame-delimiter", 10);
+    char outputLayerDelimiter = (char)getArgInt(argc, argv, "--output-layer-delimiter", 59);
+    int minimumDrawnHeight = getArgInt(argc, argv, "--minimum-output-height", 80);
+    int barAddedHeight = getArgInt(argc, argv, "--bar-added-height", 0);
+
     const int BUFFER_SIZE = 8192;
     int head = 0;
     int bytesRead = 0;
@@ -124,8 +131,7 @@ int main(int argc, const char **argv){
     char buffer[BUFFER_SIZE];
     memset(buffer, 0, sizeof(char) * BUFFER_SIZE);
     char tempBuffer[BUFFER_SIZE];
-    int minimumDrawnHeight = getArgInt(argc, argv, "--minimum-output-height", 80);
-    int barAddedHeight = getArgInt(argc, argv, "--bar-added-height", 0);
+
     struct barCharecters chars;
     chars.charByteSize = 4;
     chars.charByteOffset = 3;
@@ -139,13 +145,16 @@ int main(int argc, const char **argv){
     chars.charecters[6] = "▆";
     chars.charecters[7] = "▇";
     chars.charecters[8] = "█";
+
+
+    freopen(NULL, "rs", stdin);
     while (1) {
         bytesRead = read(0, &buffer[head], BUFFER_SIZE - head);
 
-        if(findChar(&buffer[head], bytesRead, '\n', &newLinePosition)){
+        if(findChar(&buffer[head], bytesRead, inputFrameDelimiter, &newLinePosition)){
             int endOfLineBufferSize = head + newLinePosition + 1;
 
-            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight, barAddedHeight, ';', ';', '\n');
+            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight, barAddedHeight, inputBarDelimiter, outputLayerDelimiter, outputFrameDelimiter);
 
             memcpy(tempBuffer, buffer, sizeof(char) * BUFFER_SIZE);
             memset(buffer, 0, sizeof(char) * BUFFER_SIZE);
