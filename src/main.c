@@ -108,7 +108,7 @@ void printHelp(){
     printf("\ncavawrapper Help Screen\n\n");
     printf("This program reads the raw output from cava in ascii mode.\nThe cava output will need to be piped into this program.\n\nOptional Arguments:\n");
     printf("\n\t--bar-added-height [num]  -  (default: 0)  -  adds a set amount of height to every bar.\n\t\tUsefull if you want to permenantly see the bars even when theres little to no sound.\n");
-    printf("\n\t--minimum-output-height [num]  -  (default: 80)  -  forces the program to print a minimum amount of bar height.\n\t\tThis will not change the bars height, but will make the program draw alot more empty space.\n\t\tThis is usefull if another program struggels with the length of the output changing alot.\n\n");
+    printf("\n\t--minimum-output-height [amount of layers]  -  (default: 10)  -  forces the program to output a minimum amount of layers.\n\t\tThis will not change the bars height, but will make the program draw alot more empty space.\n\t\tThis is usefull if another program struggels with the length of the output changing alot.\n\n");
     printf("\n\t--input-bar-delimiter [ascii code]  -  (default: 59)  -  Changes the expected charecter between inputed bar values.\n");
     printf("\n\t--input-frame-delimiter [ascii code]  -  (default: 10)  - Changes the expected charecter after all bar values are printed.\n");
     printf("\n\t--output-layer-delimiter [ascii code]  -  (default: 59)  - Changes the output charecter that goes in between each layer\n");
@@ -126,7 +126,7 @@ int main(int argc, const char **argv){
     char inputBarDelimiter = (char)getArgInt(argc, argv, "--input-bar-delimiter", 59);
     char outputFrameDelimiter = (char)getArgInt(argc, argv, "--output-frame-delimiter", 10);
     char outputLayerDelimiter = (char)getArgInt(argc, argv, "--output-layer-delimiter", 59);
-    int minimumDrawnHeight = getArgInt(argc, argv, "--minimum-output-height", 80);
+    int minimumDrawnHeight = getArgInt(argc, argv, "--minimum-output-height", 10);
     int barAddedHeight = getArgInt(argc, argv, "--bar-added-height", 0);
 
     const int BUFFER_SIZE = 8192;
@@ -159,7 +159,7 @@ int main(int argc, const char **argv){
         if(findChar(&buffer[head], bytesRead, inputFrameDelimiter, &newLinePosition)){
             int endOfLineBufferSize = head + newLinePosition + 1;
 
-            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight, barAddedHeight, inputBarDelimiter, outputLayerDelimiter, outputFrameDelimiter);
+            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight * (chars.amountOfChars - 1), barAddedHeight, inputBarDelimiter, outputLayerDelimiter, outputFrameDelimiter);
 
             memcpy(tempBuffer, buffer, sizeof(char) * BUFFER_SIZE);
             memset(buffer, 0, sizeof(char) * BUFFER_SIZE);
