@@ -151,6 +151,8 @@ int main(int argc, const char **argv){
     chars.charecters[7] = "▇";
     chars.charecters[8] = "█";
 
+    minimumDrawnHeight *= chars.amountOfChars - 1;
+
 
     freopen(NULL, "rs", stdin);
     while (1) {
@@ -159,7 +161,7 @@ int main(int argc, const char **argv){
         if(findChar(&buffer[head], bytesRead, inputFrameDelimiter, &newLinePosition)){
             int endOfLineBufferSize = head + newLinePosition + 1;
 
-            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight * (chars.amountOfChars - 1), barAddedHeight, inputBarDelimiter, outputLayerDelimiter, outputFrameDelimiter);
+            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight, barAddedHeight, inputBarDelimiter, outputLayerDelimiter, outputFrameDelimiter);
 
             memcpy(tempBuffer, buffer, sizeof(char) * BUFFER_SIZE);
             memset(buffer, 0, sizeof(char) * BUFFER_SIZE);
