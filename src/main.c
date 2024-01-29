@@ -107,8 +107,13 @@ size_t checkHelp(const int argc, const char **argv){
 void printHelp(){
     printf("\ncavawrapper Help Screen\n\n");
     printf("This program reads the raw output from cava in ascii mode.\nThe cava output will need to be piped into this program.\n\nOptional Arguments:\n");
-    printf("\t--bar-added-height [num]  -  (default: 0)  -  adds a set amount of height to every bar.\n\t\tUsefull if you want to permenantly see the bars even when theres little to no sound.\n");
-    printf("\t--minimum-output-height [num]  -  (default: 80)  -  forces the program to print a minimum amount of bar height.\n\t\tThis will not change the bars height, but will make the program draw alot more empty space.\n\t\tThis is usefull if another program struggels with the length of the output changing alot.\n\n");
+    printf("\n\t--bar-added-height [num]  -  (default: 0)  -  adds a set amount of height to every bar.\n\t\tUsefull if you want to permenantly see the bars even when theres little to no sound.\n");
+    printf("\n\t--minimum-output-height [num]  -  (default: 80)  -  forces the program to print a minimum amount of bar height.\n\t\tThis will not change the bars height, but will make the program draw alot more empty space.\n\t\tThis is usefull if another program struggels with the length of the output changing alot.\n\n");
+    printf("\n\t--input-bar-delimiter [ascii code]  -  (default: 59)  -  Changes the expected charecter between inputed bar values.\n");
+    printf("\n\t--input-frame-delimiter [ascii code]  -  (default: 10)  - Changes the expected charecter after all bar values are printed.\n");
+    printf("\n\t--output-layer-delimiter [ascii code]  -  (default: 59)  - Changes the output charecter that goes in between each layer\n");
+    printf("\n\t--output-frame-delimiter [ascii code]  -  (default: 10)  - Changes the output charecter that goes after evey layer has been printed");
+    printf("\n\n");
 }
 
 int main(int argc, const char **argv){
