@@ -134,6 +134,11 @@ This will replace the raw data's seperator charecter with a new line.<br>
 you can't insert a \n char in eww so you have to make the string use a real new line char instead (thats why it looks ugly and wraps like that).
 
 I recomend to use a monospaced font like "Hack" so the bars connect on each line. 
+
+#### Eww struggling with small bar sizes
+For some reason eww stutters when the outputed string changes size really fast.<br>
+You can use the argument --minimum-output-height to set a minimum amount of layers.<br>
+The larger this value is the smoother eww will display it. However, eww will use more power when nothing is playing.
 <br>
 <br>
 
