@@ -10,7 +10,7 @@ struct barCharecters {
     int amountOfChars;
 };
 
-void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const struct barCharecters* charecters, char lineDelimiter, char frameDelimiter){
+void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const struct barCharecters* charecters, char lineDelimiter, char frameDelimiter, size_t flippedOutput){
     //byte data to draw no hidden charecters
     //amount of visible bars
     int barLayers = charecters->amountOfChars - 1;
@@ -21,25 +21,49 @@ void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const stru
     char mainBuf[maxHeight * amountOfBars * charecters->charByteSize + amountOfBars * 2];
     int size_mainBuf = 0;
     //each line of bars
-    for(int level = layers - 1; level >= 0; level--) {
-        for (int i = 0; i < amountOfBars; i++) {
-            int value = bars[i];
+    if(flippedOutput){
+        for(int level = 0; level < layers; level++) {
+            for (int i = 0; i < amountOfBars; i++) {
+                int value = bars[i];
 
-            //gets the index for what bar to draw
-            int index = value % barLayers;
-            if ((level + 1) * barLayers <= value){
-                index = barLayers;
-            }else if (level * barLayers >= value){
-                index = 0;
+                //gets the index for what bar to draw
+                int index = value % barLayers;
+                if ((level + 1) * barLayers <= value){
+                    index = barLayers;
+                }else if (level * barLayers >= value){
+                    index = 0;
+                }
+                //appends char to buffer
+                snprintf(mainBuf + size_mainBuf, charecters->charByteSize, "%s", charecters->charecters[index]);
+                size_mainBuf += charecters->charByteOffset;
             }
-            //appends char to buffer
-            snprintf(mainBuf + size_mainBuf, charecters->charByteSize, "%s", charecters->charecters[index]);
-            size_mainBuf += charecters->charByteOffset;
+            //appends bar line delimiter
+            if (level != layers - 1){
+                sprintf(mainBuf + size_mainBuf, "%c", lineDelimiter);
+                size_mainBuf += 1;
+            }
         }
-        //appends bar line delimiter
-        if (level != 0){
-            sprintf(mainBuf + size_mainBuf, "%c", lineDelimiter);
-            size_mainBuf += 1;
+    } else {
+        for(int level = layers - 1; level >= 0; level--) {
+            for (int i = 0; i < amountOfBars; i++) {
+                int value = bars[i];
+
+                //gets the index for what bar to draw
+                int index = value % barLayers;
+                if ((level + 1) * barLayers <= value){
+                    index = barLayers;
+                }else if (level * barLayers >= value){
+                    index = 0;
+                }
+                //appends char to buffer
+                snprintf(mainBuf + size_mainBuf, charecters->charByteSize, "%s", charecters->charecters[index]);
+                size_mainBuf += charecters->charByteOffset;
+            }
+            //appends bar line delimiter
+            if (level != 0){
+                sprintf(mainBuf + size_mainBuf, "%c", lineDelimiter);
+                size_mainBuf += 1;
+            }
         }
     }
     //append end of framw delimiter
@@ -50,7 +74,7 @@ void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const stru
 }
 
 void proccess(size_t amount_of_bytes, const char *str, const struct barCharecters* charecters,
-        int minimumHeight, int addedBarHeight, char inputBarDelimiter, char lineDelimiter, char frameDelimiter){
+        int minimumHeight, int addedBarHeight, char inputBarDelimiter, char lineDelimiter, char frameDelimiter, size_t flippedOutput){
     int biggest = minimumHeight;
     int barSizes[amount_of_bytes/2];
     int barSizesHead = 0;
@@ -69,7 +93,7 @@ void proccess(size_t amount_of_bytes, const char *str, const struct barCharecter
         for(int i=0;i<numStorageHead;i++){numStorage[i]=' ';};
         numStorageHead = 0;
     }
-    printFinalLine(barSizes, barSizesHead, biggest, charecters, lineDelimiter, frameDelimiter);
+    printFinalLine(barSizes, barSizesHead, biggest, charecters, lineDelimiter, frameDelimiter, flippedOutput);
 }
 
 uint findChar(const char *buffer, const uint bufferSize, const char charecter, int *positionOut){
@@ -96,6 +120,18 @@ int getArgInt(const int argc, const char **argv,const char *argumentName, int de
     }
     return defaultValue;
 }
+
+size_t containsArg(const int argc, const char **argv,const char *argumentName){
+    char *lastChar;
+    for(int i = 1; i < argc; i++){
+        //only runs if previous argument name was a match
+        if(strcmp(argumentName, argv[i]) == 0){
+            return 1;
+        }
+    }
+    return 0;
+}
+
 size_t checkHelp(const int argc, const char **argv){
     for( int i = 1; i < argc; i++){
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
@@ -128,6 +164,7 @@ int main(int argc, const char **argv){
     char outputLayerDelimiter = (char)getArgInt(argc, argv, "--output-layer-delimiter", 59);
     int minimumDrawnHeight = getArgInt(argc, argv, "--minimum-output-height", 10);
     int barAddedHeight = getArgInt(argc, argv, "--bar-added-height", 0);
+    size_t flipped = containsArg(argc, argv, "--flip-output");
 
     const int BUFFER_SIZE = 8192;
     int head = 0;
@@ -161,7 +198,7 @@ int main(int argc, const char **argv){
         if(findChar(&buffer[head], bytesRead, inputFrameDelimiter, &newLinePosition)){
             int endOfLineBufferSize = head + newLinePosition + 1;
 
-            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight, barAddedHeight, inputBarDelimiter, outputLayerDelimiter, outputFrameDelimiter);
+            proccess(endOfLineBufferSize, buffer, &chars, minimumDrawnHeight, barAddedHeight, inputBarDelimiter, outputLayerDelimiter, outputFrameDelimiter, flipped);
 
             memcpy(tempBuffer, buffer, sizeof(char) * BUFFER_SIZE);
             memset(buffer, 0, sizeof(char) * BUFFER_SIZE);
