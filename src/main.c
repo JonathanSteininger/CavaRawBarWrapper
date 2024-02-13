@@ -148,7 +148,8 @@ void printHelp(){
     printf("\n\t--input-bar-delimiter [ascii code]  -  (default: 59)  -  Changes the expected charecter between inputed bar values.\n");
     printf("\n\t--input-frame-delimiter [ascii code]  -  (default: 10)  - Changes the expected charecter after all bar values are printed.\n");
     printf("\n\t--output-layer-delimiter [ascii code]  -  (default: 59)  - Changes the output charecter that goes in between each layer\n");
-    printf("\n\t--output-frame-delimiter [ascii code]  -  (default: 10)  - Changes the output charecter that goes after evey layer has been printed");
+    printf("\n\t--output-frame-delimiter [ascii code]  -  (default: 10)  - Changes the output charecter that goes after evey layer has been printed\n");
+    printf("\n\t--flip-output  -  reverses the order of the layers");
     printf("\n\n");
 }
 
