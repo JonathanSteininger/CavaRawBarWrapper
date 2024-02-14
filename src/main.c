@@ -10,6 +10,19 @@ struct barCharecters {
     int amountOfChars;
 };
 
+/// returns amount of bytes changed.
+int snprintBlock(char *buffer, const struct barCharecters *charecters, size_t barHeight, size_t level){
+    size_t barLayers = charecters->amountOfChars -1;
+    int index = barHeight % barLayers;
+    if ((level + 1) * barLayers <= barHeight){
+        index = barLayers;
+    }else if (level * barLayers >= barHeight){
+        index = 0;
+    }
+    snprintf(buffer, charecters->charByteSize, "%s", charecters->charecters[index]);
+    return charecters->charByteOffset;
+}
+
 void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const struct barCharecters* charecters, char lineDelimiter, char frameDelimiter, size_t flippedOutput){
     //byte data to draw no hidden charecters
     //amount of visible bars
@@ -24,18 +37,7 @@ void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const stru
     if(flippedOutput){
         for(int level = 0; level < layers; level++) {
             for (int i = 0; i < amountOfBars; i++) {
-                int value = bars[i];
-
-                //gets the index for what bar to draw
-                int index = value % barLayers;
-                if ((level + 1) * barLayers <= value){
-                    index = barLayers;
-                }else if (level * barLayers >= value){
-                    index = 0;
-                }
-                //appends char to buffer
-                snprintf(mainBuf + size_mainBuf, charecters->charByteSize, "%s", charecters->charecters[index]);
-                size_mainBuf += charecters->charByteOffset;
+                size_mainBuf += snprintBlock(mainBuf + size_mainBuf, charecters, bars[i], level);
             }
             //appends bar line delimiter
             if (level != layers - 1){
@@ -46,18 +48,7 @@ void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const stru
     } else {
         for(int level = layers - 1; level >= 0; level--) {
             for (int i = 0; i < amountOfBars; i++) {
-                int value = bars[i];
-
-                //gets the index for what bar to draw
-                int index = value % barLayers;
-                if ((level + 1) * barLayers <= value){
-                    index = barLayers;
-                }else if (level * barLayers >= value){
-                    index = 0;
-                }
-                //appends char to buffer
-                snprintf(mainBuf + size_mainBuf, charecters->charByteSize, "%s", charecters->charecters[index]);
-                size_mainBuf += charecters->charByteOffset;
+                size_mainBuf += snprintBlock(mainBuf + size_mainBuf, charecters, bars[i], level);
             }
             //appends bar line delimiter
             if (level != 0){
@@ -72,6 +63,7 @@ void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const stru
     //writes to rawOutput path
     fwrite(&mainBuf, size_mainBuf, 1, stdout);
 }
+
 
 void proccess(size_t amount_of_bytes, const char *str, const struct barCharecters* charecters,
         int minimumHeight, int addedBarHeight, char inputBarDelimiter, char lineDelimiter, char frameDelimiter, size_t flippedOutput){
