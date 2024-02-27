@@ -17,7 +17,7 @@ typedef enum{
 } outputDirections;
 
 /// returns amount of bytes changed.
-int snprintBlock(char *buffer, const struct barCharecters *charecters, size_t barHeight, size_t level){
+int snprintBlock(char *buffer, const struct barCharecters *charecters, size_t barHeight,const size_t level){
     size_t barLayers = charecters->amountOfChars -1;
     int index = barHeight % barLayers;
     if ((level + 1) * barLayers <= barHeight){
@@ -30,33 +30,32 @@ int snprintBlock(char *buffer, const struct barCharecters *charecters, size_t ba
 }
 
 void snprintBarsTop(char *buffer, int *sizeTracker, size_t layers, size_t amount_of_bars, int *bars, const struct barCharecters *charecters, char lineDelimiter){
-        for(int level = 0; level < layers; level++) {
-            for (int i = 0; i < amount_of_bars; i++) {
-                *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
-            }
-            //appends bar line delimiter
-            if (level != layers - 1){
-                sprintf(buffer + *sizeTracker , "%c", lineDelimiter);
-                *sizeTracker += 1;
-            }
+    for(int level = 0; level < layers; level++) {
+        for (int i = 0; i < amount_of_bars; i++) {
+            *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
         }
+        //appends bar line delimiter
+        if (level != layers - 1){
+            sprintf(buffer + *sizeTracker , "%c", lineDelimiter);
+            *sizeTracker += 1;
+        }
+    }
 }
 
 void snprintBarsBottom(char *buffer, int *sizeTracker, size_t layers, size_t amount_of_bars, int *bars, const struct barCharecters *charecters, char lineDelimiter){
-        for(int level = layers - 1; level >= 0; level--) {
-            for (int i = 0; i < amount_of_bars; i++) {
-                *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
-            }
-            //appends bar line delimiter
-            if (level != 0){
-                sprintf(buffer + *sizeTracker , "%c", lineDelimiter);
-                *sizeTracker += 1;
-            }
+    for(int level = layers - 1; level >= 0; level--) {
+        for (int i = 0; i < amount_of_bars; i++) {
+            *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
         }
+        //appends bar line delimiter
+        if (level != 0){
+            sprintf(buffer + *sizeTracker , "%c", lineDelimiter);
+            *sizeTracker += 1;
+        }
+    }
 }
 void snprintBarsLeft(char *buffer, int *sizeTracker, size_t layers, size_t amount_of_bars, int *bars, const struct barCharecters *charecters, char lineDelimiter){
     for(size_t i = 0; i < amount_of_bars; i++){
-        int bar = bars[i];
         for( size_t level = 0; level < layers; level++ ){
             *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
         }
@@ -65,6 +64,13 @@ void snprintBarsLeft(char *buffer, int *sizeTracker, size_t layers, size_t amoun
     }
 }
 void snprintBarsRight(char *buffer, int *sizeTracker, size_t layers, size_t amount_of_bars, int *bars, const struct barCharecters *charecters, char lineDelimiter){
+    for(size_t i = 0; i < amount_of_bars; i++){
+        for( int level = layers - 1; level >= 0; level--){
+            *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
+        }
+        sprintf(buffer + *sizeTracker , "%c", lineDelimiter);
+        *sizeTracker += 1;
+    }
 }
 
 void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const struct barCharecters* charecters, char lineDelimiter, char frameDelimiter, outputDirections direction){
