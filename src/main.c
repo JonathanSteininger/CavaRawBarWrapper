@@ -29,6 +29,32 @@ int snprintBlock(char *buffer, const struct barCharecters *charecters, size_t ba
     return charecters->charByteOffset;
 }
 
+void snprintBarsTop(char *buffer, int *sizeTracker, size_t layers, size_t amount_of_bars, int *bars, const struct barCharecters *charecters, char lineDelimiter){
+        for(int level = 0; level < layers; level++) {
+            for (int i = 0; i < amount_of_bars; i++) {
+                *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
+            }
+            //appends bar line delimiter
+            if (level != layers - 1){
+                sprintf(buffer + *sizeTracker , "%c", lineDelimiter);
+                *sizeTracker += 1;
+            }
+        }
+}
+
+void snprintBarsBottom(char *buffer, int *sizeTracker, size_t layers, size_t amount_of_bars, int *bars, const struct barCharecters *charecters, char lineDelimiter){
+        for(int level = layers - 1; level >= 0; level--) {
+            for (int i = 0; i < amount_of_bars; i++) {
+                *sizeTracker += snprintBlock(buffer + *sizeTracker, charecters, bars[i], level);
+            }
+            //appends bar line delimiter
+            if (level != 0){
+                sprintf(buffer + *sizeTracker , "%c", lineDelimiter);
+                *sizeTracker += 1;
+            }
+        }
+}
+
 void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const struct barCharecters* charecters, char lineDelimiter, char frameDelimiter, outputDirections direction){
     //byte data to draw no hidden charecters
     //amount of visible bars
@@ -42,28 +68,17 @@ void printFinalLine(int *bars, size_t amountOfBars, size_t maxHeight, const stru
     //each line of bars
     
     if(direction == 0){ //bottom
-        for(int level = layers - 1; level >= 0; level--) {
-            for (int i = 0; i < amountOfBars; i++) {
-                size_mainBuf += snprintBlock(mainBuf + size_mainBuf, charecters, bars[i], level);
-            }
-            //appends bar line delimiter
-            if (level != 0){
-                sprintf(mainBuf + size_mainBuf, "%c", lineDelimiter);
-                size_mainBuf += 1;
-            }
+        snprintBarsBottom(mainBuf + size_mainBuf, &size_mainBuf, layers, amountOfBars, bars, charecters, lineDelimiter);
+    } else if (direction == 1) { //left
+        for(int i = 0; i < amountOfBars; i++){
+
         }
     } else if (direction == 2) { //top
-        for(int level = 0; level < layers; level++) {
-            for (int i = 0; i < amountOfBars; i++) {
-                size_mainBuf += snprintBlock(mainBuf + size_mainBuf, charecters, bars[i], level);
-            }
-            //appends bar line delimiter
-            if (level != layers - 1){
-                sprintf(mainBuf + size_mainBuf, "%c", lineDelimiter);
-                size_mainBuf += 1;
-            }
-        }
+        snprintBarsTop(mainBuf + size_mainBuf, &size_mainBuf, layers, amountOfBars, bars, charecters, lineDelimiter);
+    } else {//right
+
     }
+
     //append end of framw delimiter
     sprintf(mainBuf + size_mainBuf, "%c", frameDelimiter);
     size_mainBuf += 1;
