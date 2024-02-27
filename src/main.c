@@ -204,15 +204,23 @@ int main(int argc, const char **argv){
     chars.charByteSize = 4;
     chars.charByteOffset = 3;
     chars.amountOfChars = 9;
-    chars.charecters[0] = " ";
-    chars.charecters[1] = "▁";
-    chars.charecters[2] = "▂";
-    chars.charecters[3] = "▃";
-    chars.charecters[4] = "▄";
-    chars.charecters[5] = "▅";
-    chars.charecters[6] = "▆";
-    chars.charecters[7] = "▇";
-    chars.charecters[8] = "█";
+
+
+    size_t charCount = 9;
+
+    char *charMap[] = {" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█",
+                       " ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█",
+                       " ", " ", "▔", "▔", "▔", "▀", "▀", "▀", "█",
+                       " ", " ", "▕", "▕", "▕", "▐", "▐", "▐", "█",
+    };
+
+    char *tempCharecters[9]; 
+    //copies memory from the chunk depending to the direction value.
+    memcpy(tempCharecters, &charMap[ direction * 9 ], sizeof(char*) * 9);
+
+    for(int i = 0; i < charCount; i++){
+        chars.charecters[i] = tempCharecters[i];
+    }
 
     minimumDrawnHeight *= chars.amountOfChars - 1;
 
