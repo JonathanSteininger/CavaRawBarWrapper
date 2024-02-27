@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -196,8 +197,14 @@ outputDirections getDirectionFromString(const char *directionString, outputDirec
     size_t amount = 4;
     outputDirections directions[] = {bottom, left, top, right};
     char *comparisons[] = {"bottom", "left", "top", "right"};
-    for(size_t i= 0; i < amount; i++){
-        if(strcmp(comparisons[i], directionString) == 0){
+    size_t size = strlen(directionString);
+    char copy[size];
+    memcpy(copy, directionString, size);
+    for(int i = 0; i < size; i++){
+        copy[i] = tolower(copy[i]);
+    }
+    for(size_t i = 0; i < amount; i++){
+        if(strcmp(comparisons[i], copy) == 0){
             return directions[i];
         }
     }
