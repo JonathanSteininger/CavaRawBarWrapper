@@ -7,6 +7,7 @@ CavaRawBarWrapper
   - [Building](#building)
 - [Usage](#usage)
   - [Arguments and Help](#arguments-and-help)
+      -  [Help Screen](#help-screen)
   - [EWW](#eww)
 - [What it outputs](#output)
 
@@ -102,6 +103,35 @@ Its recommended to make a local cava config and pass that into cava.<br>
 
 You can get a list of arguments their uses through the use of the -h and --help argument.
 `./cavawrapper -h`
+
+##### Help Screen
+```
+cavawrapper Help Screen
+
+This program reads the raw output from cava in ascii mode.
+The cava output will need to be piped into this program.
+
+Optional Arguments:
+
+	--bar-added-height [num]  -  (default: 0)  -  adds a set amount of height to every bar.
+		Usefull if you want to permenantly see the bars even when theres little to no sound.
+
+	--minimum-output-height [amount of layers]  -  (default: 10)  -  forces the program to output a minimum amount of layers.
+		This will not change the bars height, but will make the program draw alot more empty space.
+		This is usefull if another program struggels with the length of the output changing alot.
+
+
+	--input-bar-delimiter [ascii code]  -  (default: 59)  -  Changes the expected charecter between inputed bar values.
+
+	--input-frame-delimiter [ascii code]  -  (default: 10)  - Changes the expected charecter after all bar values are printed.
+
+	--output-layer-delimiter [ascii code]  -  (default: 59)  - Changes the output charecter that goes in between each layer
+
+	--output-frame-delimiter [ascii code]  -  (default: 10)  - Changes the output charecter that goes after evey layer has been printed
+
+	--position-output [position]  -  (default: bottom)  -  Chooses the direction of the output. options: bottom, left, top, right
+```
+
 
 #### notes
 
