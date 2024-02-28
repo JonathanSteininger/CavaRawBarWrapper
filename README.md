@@ -2,7 +2,7 @@ CavaRawBarWrapper
 =================
 
 - [Description](#description)
-- [Instillation](#instillation)
+- [Compilation](#compilation)
   - [Requirements](#requirments)
   - [Building](#building)
 - [Usage](#usage)
@@ -34,8 +34,8 @@ and converts it into lines of <a href="https://en.wikipedia.org/wiki/Block_Eleme
 
 
 
-Instillation
-------------
+Compilation
+-----------
 
 #### Requirments
 <ul>
