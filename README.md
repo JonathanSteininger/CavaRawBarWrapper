@@ -1,15 +1,3 @@
-! Announcment !
-===============
-This config is getting re-written and refactored for **EWW v0.6.0**<br>
-All scripts will be re-written in python for better performance and better maintainability. <br>
-This work is being done on the eww0.6 branch. <br>
-<br>
-Consider the main branch unmaintained.
-<br>
-<br>
-
-
-
 CavaRawBarWrapper
 =================
 
